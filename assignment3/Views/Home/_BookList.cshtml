@@ -1,0 +1,52 @@
+﻿@model List<assignment3.Models.tblbook>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered">
+            @*<tr>
+                    <th>Book ID</th>
+                    <th>Book Name</th>
+                    <th>Publisher Name</th>
+                    <th>Book Edition</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>*@
+            <div class="card-group" id="search-results">
+                @foreach (var book in Model)
+                {
+                    <div class="card-group" style="margin-left: 1%; width: 22%; margin-top: 1%; ">
+                        <div class="card">
+                            @if (book.Image != null)
+                            {
+                                <img src="data:@book.ContentType;base64,@Convert.ToBase64String(book.Image)" class="card-img-top" alt="Book Image" style="width: 43%; margin-left: 37%;" id="bookId" />
+                            }
+                            else
+                            {
+                                <div style="width: 43%; margin-left: 37%; text-align: center;">
+                                    No Image Available
+                                </div>
+                            }
+                            <div class="card-body">
+
+                                <h6 class="card-title"> Book Name:-</h6><p class="card-text">@book.Bookname</p>
+                                <h6 class="card-title"> Book Edition:- </h6><p class="card-text">@book.Bookedition</p>
+                                <br />
+                                Edit:-  @Html.ActionLink("Edit", "update", new { id = book.Bookid, imageData = book.Image, contenttype = book.ContentType }, new { style = "color: red; text-decoration: none;" })
+
+                                <br />
+                                Delete:-  @Html.ActionLink("Delete", "Delete", new { id = book.Bookid }, new { @class = "delete-link", data_id = book.Bookid })
+
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                                                ////storeSelectedImage();
+                    </script>
+                }
+
+            </div>
+        </table>
+    </div>
+</div>
+
+

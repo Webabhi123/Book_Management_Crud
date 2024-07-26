@@ -1,0 +1,162 @@
+﻿@model List<assignment3.Models.tblbook>
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<head>
+   <style>
+       #body{
+           background-color:cadetblue;
+           
+       }
+       .create-link {
+           text-decoration: none;
+           color: red;
+       }
+       .delete-link {
+           text-decoration: none;
+           color: red;
+       }
+   </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".delete-link").on("click", function (e) {
+                e.preventDefault();
+
+                var bookId = $(this).data("id");
+                var confirmation = confirm("are you sure do you want to delete this?");
+
+                if (confirmation) {
+                    window.location.href = "/Home/Delete?id=" + bookId;
+                }
+            });
+            $("#search").on("input", function () {
+                var searchValue = $(this).val();
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/Index",
+                    data: { searchby: searchValue },
+                    success: function (data) {
+                        // Replace the HTML content of the existing table with the filtered results
+                        $("#search-results").html(data);
+                    }
+                });
+            });
+        });
+   
+            function storeSelectedImage(bookId) {
+            var image = document.getElementById('bookImage_' + bookId);
+            var imgSrc = image.src;
+            localStorage.setItem('selectedImage_' + bookId, imgSrc);
+        }
+   
+    </script>
+</head>
+<br />
+<div id="body">
+    <nav class="navbar bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br />
+    @Html.ActionLink("Create", "Create", new { style = "text-alignment:center;" })<br />
+    <br />
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+        <input type="text" name="searchby" placeholder="Search by id,name,edition" id="search" style="border-radius:50px" />
+
+        <input type="submit" style="background-color:cadetblue; border-radius:50px" />
+        @*<div id="search-results">
+
+        </div>*@
+
+    }
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered">
+                @*<tr>
+                        <th>Book ID</th>
+                        <th>Book Name</th>
+                        <th>Publisher Name</th>
+                        <th>Book Edition</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>*@
+                <div class="card-group" id="search-results">
+                    @foreach (var book in Model)
+                    {
+                        <div class="card-group" style="margin-left: 1%; width: 22%; margin-top: 1%; ">
+                            <div class="card">
+                                @if (book.Image != null)
+                                {
+                                    <img src="data:@book.ContentType;base64,@Convert.ToBase64String(book.Image)" class="card-img-top" alt="Book Image" style="width: 43%; margin-left: 37%;" id="bookId" />
+                                }
+                                else
+                                {
+                                    <div style="width: 43%; margin-left: 37%; text-align: center;">
+                                        No Image Available
+                                    </div>
+                                }
+                                <div class="card-body">
+
+                                    <h6 class="card-title"> Book Name:-</h6><p class="card-text">@book.Bookname</p>
+                                    <h6 class="card-title"> Book Edition:- </h6><p class="card-text">@book.Bookedition</p>
+                                    <br />
+                                    Edit:-  @Html.ActionLink("Edit", "update", new { id = book.Bookid, imageData = book.Image, contenttype = book.ContentType }, new { style = "color: red; text-decoration: none;" })
+
+                                    <br />
+                                    Delete:-  @Html.ActionLink("Delete", "Delete", new { id = book.Bookid }, new { @class = "delete-link", data_id = book.Bookid })
+
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                                                ////storeSelectedImage();
+                        </script>
+                    }
+
+                </div>
+            </table>
+        </div>
+    </div>
+    <div class="card text-center" style="background-color:lightslategrey">
+        <div class="card-header">
+            Featured
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Book-Management</h5>
+            <p class="card-text">With CRUD Operation.</p>
+            <a href="#" class="btn btn-primary"></a>
+        </div>
+        <div class="card-footer text-body-secondary">
+            2 days ago
+        </div>
+    </div>
+
+

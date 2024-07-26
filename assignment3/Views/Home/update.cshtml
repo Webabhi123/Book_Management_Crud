@@ -1,0 +1,105 @@
+﻿@model assignment3.Models.tblbook
+
+@{
+    ViewBag.Title = "update";
+}
+
+<h2>update</h2>
+
+<script>
+    
+    function displayimage() {
+        var input = document.getElementById('ImageData');
+        var image = document.getElementById('bookImage');
+        var cancelimage = document.getElementById('cancelButton');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                image.src = e.target.result;
+                input.style.display = 'none';
+                cancelimage.style.display = 'block';
+                image.style.display = 'block';
+
+                //input.value = input.files[0].name;
+                var hiddenInput = document.getElementById('ImageData');
+                hiddenInput.value = e.target.result;
+
+                localStorage.setItem('selectedImage', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+    }
+    function cancelimage() {
+        var input = document.getElementById('ImageData');
+        var image = document.getElementById('bookImage');
+        var cancelimage = document.getElementById('cancelButton');
+
+        input.value = null;
+        image.src = '';
+        input.style.display = 'block';
+        cancelimage.style.display = 'none';
+
+    }
+</script>
+
+@using (Html.BeginForm("update", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    <h4>tblbook</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Bookid)
+
+<div class="form-group">
+    <label for="ImageData">Image</label>
+
+    <img src="data:@Model.ContentType;base64,@Convert.ToBase64String(Model.Image)"  alt="Book Image" id="bookImage" style="max-width:200px" />
+    <input type="file" name="ImageData" id="ImageData" accept="image/*" onchange="displayimage();" />
+    <button id="cancelButton" type="button" onclick="cancelimage()" style="display:none;">Cancel</button>
+</div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Bookname, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Bookname, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Bookname, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Publishername, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Publishername, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Publishername, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Bookedition, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Bookedition, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Bookedition, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

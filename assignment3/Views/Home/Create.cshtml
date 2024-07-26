@@ -1,0 +1,124 @@
+﻿@model assignment3.Models.tblbook
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<script>
+    function displayimage() {
+        var input = document.getElementById('ImageData');
+        var image = document.getElementById('bookImage');
+        var cancelimage = document.getElementById('canelButton');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                image.src = e.target.result;
+                input.style.display = 'none';
+                cancelimage.style.display = 'block';
+                image.style.display = 'block';
+
+                //input.value = input.files[0].name;
+
+                localStorage.setItem('selectedImage',e.target.result)
+            }; 
+            reader.readAsDataURL(input.files[0]);
+            }
+        
+    }
+    function cancelimage() {
+        var input = document.getElementById('ImageData');
+        var image = document.getElementById('bookImage');
+        var cancelimage = document.getElementById('canelButton');
+
+        input.value = null;
+        image.src = '';
+        input.style.display = 'block';
+        cancelimage.style.display = 'none';
+       
+    }
+    
+    //window.onload = function () {
+
+    //    localStorage.removeItem('selectedImage');
+
+
+    //    var storedimage = localStorage.getItem('selectedImage');
+    //    if (storedimage) {
+    //        console.log('Stored image found:', storedimage); 
+    //        var image = document.getElementById('bookImage');
+    //        image.src = storedimage;
+    //        image.style.display = 'block';
+    //    }
+    //    }
+</script>
+
+
+@using (Html.BeginForm("Create", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+<table>
+    <div class="form-horizontal" style="background-color: rosybrown;
+    padding-top: 4%;
+    height: 61%;">
+        <h4>Add New Book Record</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Bookname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <br />
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Bookname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Bookname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Publishername, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Publishername, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Publishername, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Bookedition, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Bookedition, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Bookedition, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <br />
+            @*Html.LabelFor(model => model.ImagePath, htmlAttributes: new { class = "control-label col-md-2" })*@
+            <div class="col-md-10">
+                @*<input type="file" name="ImageData" id="ImageData" onchange="fileCheck(this);" required/>*@
+                <img id="bookImage" src="#" alt="Book Image" style="max-width:200px; display:none;" onclick="bookimage();" />
+                <input type="file" name="ImageData" id="ImageData" accept="image/*" onchange="displayimage();" required />
+                <button id="canelButton" type="button" onclick="cancelimage()" style="display:none;">Cancel</button><br />
+
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" /><br />
+            </div>
+        </div>
+    </div>
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</table>
+        }
+    <br/>
+    <br />
+    
+
+    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
